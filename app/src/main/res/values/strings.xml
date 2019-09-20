@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">My Movies</string>
+    <string name="poster_film">Постер фильма</string>
+    <string name="the_most_popular">Самые популярные</string>
+    <string name="the_most_rated">Наиболее рейтинговые</string>
+    <string name="film_overview">Описание фильма:</string>
+    <string name="release_date">Дата релиза:</string>
+    <string name="film_rating">Рейтинг:</string>
+    <string name="original_title_film">Оригинальное название:</string>
+    <string name="title_film">Название:</string>
+</resources>
