@@ -8,4 +8,7 @@
     <string name="film_rating">Рейтинг:</string>
     <string name="original_title_film">Оригинальное название:</string>
     <string name="title_film">Название:</string>
+    <string name="menu_item_main">Главная</string>
+    <string name="menu_item_favourite">Избранное</string>
+    <string name="launch_trailer">Запустить трейлер</string>
 </resources>
