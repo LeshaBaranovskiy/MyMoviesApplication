@@ -32,6 +32,8 @@ import com.squareup.picasso.Picasso;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 public class DetailActivity extends AppCompatActivity {
 
@@ -42,6 +44,7 @@ public class DetailActivity extends AppCompatActivity {
     private TextView textViewRating;
     private TextView textViewReleaseDate;
     private TextView textViewOverview;
+    private TextView textViewNoReviews;
 
     private RecyclerView recyclerViewTrailers;
     private RecyclerView recyclerViewReviews;
@@ -53,6 +56,10 @@ public class DetailActivity extends AppCompatActivity {
     private MainViewModel mainViewModel;
     private FavouriteMovie favouriteMovie;
 
+    String lang;
+
+    //Создаем меню(три точки справа сверху), шаблон меню берем
+    //из R.menu.main_menu
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
@@ -60,6 +67,7 @@ public class DetailActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
+    //Переход в другую активность при нажатии на пункт меню
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
@@ -88,19 +96,24 @@ public class DetailActivity extends AppCompatActivity {
         textViewReleaseDate = findViewById(R.id.textViewReleaseDate);
         textViewOverview = findViewById(R.id.textViewOverview);
         imageViewAddtoFavourite = findViewById(R.id.imageViewAddToFavourite);
+        recyclerViewReviews = findViewById(R.id.recyclerViewReviews);
+        recyclerViewTrailers = findViewById(R.id.recyclerViewTrailers);
+        textViewNoReviews = findViewById(R.id.textViewNoReviews);
+
+        lang = Locale.getDefault().getLanguage();
 
         mainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
 
+        //Получение данных из интента, установление их в ImageView и TextViews
         Intent intent = getIntent();
         if (intent != null && intent.hasExtra("id")) {
             id = intent.getIntExtra("id", 0);
-            Log.i("myr", Integer.toString(id));
             if (intent.hasExtra("isFavourite")) {
                 movie = mainViewModel.getFavouriteMovieById(id);
             } else  {
                 movie = mainViewModel.getMovieById(id);
             }
-            Picasso.get().load(movie.getBigPosterPath()).into(imageViewBigPoster);
+            Picasso.get().load(movie.getBigPosterPath()).placeholder(R.drawable.placeholder_large).into(imageViewBigPoster);
             textViewTitle.setText(movie.getTitle());
             textViewOriginalTitle.setText(movie.getOriginalTitle());
             textViewRating.setText(Double.toString(movie.getVoteAverage()));
@@ -111,12 +124,11 @@ public class DetailActivity extends AppCompatActivity {
         }
         setStar();
 
-        recyclerViewReviews = findViewById(R.id.recyclerViewReviews);
-        recyclerViewTrailers = findViewById(R.id.recyclerViewTrailers);
-
+        //Адаптеры для трейлеров и отзывов
         reviewAdapter = new ReviewAdapter();
         trailerAdapter = new TrailerAdapter();
 
+        //Открытие трейлера в ютубе
         trailerAdapter.setOnTrailerClickListener(new TrailerAdapter.onTrailerClickListener() {
             @Override
             public void onTrailerClick(String url) {
@@ -125,22 +137,29 @@ public class DetailActivity extends AppCompatActivity {
             }
         });
 
+        //Установление шаблонов и адаптеров для RecyclerView
         recyclerViewReviews.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewTrailers.setLayoutManager(new LinearLayoutManager(this));
-
         recyclerViewTrailers.setAdapter(trailerAdapter);
         recyclerViewReviews.setAdapter(reviewAdapter);
 
-        JSONObject jsonObjectTrailers = NetworkUtils.getJSONForVideos(movie.getId());
-        JSONObject jsonObjectReviews = NetworkUtils.getJSONForReviews(movie.getId());
+        //Получение JSON для отзывов и трейлеров
+        JSONObject jsonObjectTrailers = NetworkUtils.getJSONForVideos(movie.getId(), lang);
+        JSONObject jsonObjectReviews = NetworkUtils.getJSONForReviews(movie.getId(), lang);
 
+        //Выделение из полученых JSON файлов отзывов и видео, занесение их в массив
         ArrayList<Trailer> trailers = JSONUtils.getTrailersJSON(jsonObjectTrailers);
         ArrayList<Review> reviews = JSONUtils.getReviewsJSON(jsonObjectReviews);
 
+        //Установка в адаптеры отзывов и трейлеров из массивов
         trailerAdapter.setTrailers(trailers);
         reviewAdapter.setReviews(reviews);
+        if (reviews.size() == 0) {
+            textViewNoReviews.setText(R.string.no_reviews);
+        }
     }
 
+    //Изменение звезды при удалении, добавлении в избранное
     private void setStar() {
         favouriteMovie = mainViewModel.getFavouriteMovieById(id);
         if (favouriteMovie == null) {
@@ -150,6 +169,7 @@ public class DetailActivity extends AppCompatActivity {
         }
     }
 
+    //Добавление и удаление из БД избранных фильмов
     public void onClickChangeFavourite(View view) {
         if (favouriteMovie == null) {
             mainViewModel.insertFavouriteMovie(new FavouriteMovie(movie));

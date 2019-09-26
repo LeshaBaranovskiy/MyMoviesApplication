@@ -10,6 +10,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+
 public class JSONUtils {
         private static final String KEY_RESULTS = "results";
 
@@ -37,7 +38,7 @@ public class JSONUtils {
         private static final String SMALL_POSTER_SIZE = "w185";
         private static final String BIG_POSTER_SIZE = "w780";
 
-
+        //Из полученого jsonObject создаем объект типа Movie
         public static ArrayList<Movie> getMoviesJSON(JSONObject jsonObject) {
             ArrayList<Movie> result = new ArrayList<>();
             if (jsonObject == null) {
@@ -69,6 +70,7 @@ public class JSONUtils {
             return result;
         }
 
+        //Из полученого jsonObject создаем объект типа Review
         public static ArrayList<Review> getReviewsJSON(JSONObject jsonObject) {
             ArrayList<Review> result = new ArrayList<>();
             if (jsonObject == null) {
@@ -88,7 +90,7 @@ public class JSONUtils {
             }
             return result;
         }
-
+        //Из полученого jsonObject создаем объект типа Trailer
         public static ArrayList<Trailer> getTrailersJSON(JSONObject jsonObject) {
             ArrayList<Trailer> result = new ArrayList<>();
             if (jsonObject == null) {

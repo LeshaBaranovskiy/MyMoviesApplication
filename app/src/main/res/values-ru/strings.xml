@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="poster_film">Постер фильма</string>
+    <string name="the_most_popular">Самые популярные</string>
+    <string name="the_most_rated">Наиболее рейтинговые</string>
+    <string name="film_overview">Описание фильма:</string>
+    <string name="release_date">Дата релиза:</string>
+    <string name="film_rating">Рейтинг:</string>
+    <string name="original_title_film">Оригинальное название:</string>
+    <string name="title_film">Название:</string>
+    <string name="menu_item_main">Главная</string>
+    <string name="menu_item_favourite">Избранное</string>
+    <string name="launch_trailer">Запустить трейлер</string>
+    <string name="label_trailers">Трейлеры</string>
+    <string name="label_reviews">Отзывы</string>
+    <string name="no_reviews">Для этого фильма нету отзывов на вашем языке</string>
+</resources>

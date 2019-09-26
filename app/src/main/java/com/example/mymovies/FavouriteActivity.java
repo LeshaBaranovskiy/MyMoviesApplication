@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -22,6 +23,8 @@ import com.example.mymovies.data.Movie;
 import java.util.ArrayList;
 import java.util.List;
 
+//Активность, похожая на MainActivity, только данные получаются из
+//БД FavouriteMovies
 public class FavouriteActivity extends AppCompatActivity {
 
     private RecyclerView recyclerViewFavouriteMovies;
@@ -55,12 +58,19 @@ public class FavouriteActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    public int getColumnCount() {
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int width = (int) (displayMetrics.widthPixels / displayMetrics.density);
+        return width/185 > 2 ? width/185 : 2;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_favourite);
         recyclerViewFavouriteMovies = findViewById(R.id.recycleViewFavouriteMovies);
-        recyclerViewFavouriteMovies.setLayoutManager(new GridLayoutManager(this, 2));
+        recyclerViewFavouriteMovies.setLayoutManager(new GridLayoutManager(this, getColumnCount()));
 
         adapter = new MovieAdapter();
         recyclerViewFavouriteMovies.setAdapter(adapter);
